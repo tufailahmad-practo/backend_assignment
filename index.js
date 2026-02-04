@@ -10,8 +10,12 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://auth-app-eight-lovat.vercel.app",
-    credentials: true,
+    origin: [
+      "http://localhost:3000",
+      "https://auth-app-eight-lovat.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
