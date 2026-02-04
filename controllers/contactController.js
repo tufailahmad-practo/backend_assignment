@@ -1,34 +1,45 @@
 const Contact = require("../models/Contact");
 
-exports.createContact = async (req, res) => {
+const createContact = async (req, res) => {
   try {
     const contact = await Contact.create({
       userId: req.user._id,
       name: req.body.name,
       phone: req.body.phone,
-      email: req.body.email
+      email: req.body.email,
+      company: req.body.company,
+      notes: req.body.notes,
     });
 
     res.status(201).json(contact);
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message });
   }
 };
 
-exports.getContacts = async (req, res) => {
+const getContacts = async (req, res) => {
   try {
-    const contacts = await Contact.find({ userId: req.user._id });
+    const contacts = await Contact.find({ userId: req.user._id }).sort({
+      createdAt: -1,
+    });
+
     res.json(contacts);
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message });
   }
 };
 
-exports.updateContact = async (req, res) => {
+const updateContact = async (req, res) => {
   try {
     const contact = await Contact.findOneAndUpdate(
       { _id: req.params.id, userId: req.user._id },
-      req.body,
+      {
+        name: req.body.name,
+        phone: req.body.phone,
+        email: req.body.email,
+        company: req.body.company,
+        notes: req.body.notes,
+      },
       { new: true }
     );
 
@@ -38,15 +49,15 @@ exports.updateContact = async (req, res) => {
 
     res.json(contact);
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message });
   }
 };
 
-exports.deleteContact = async (req, res) => {
+const deleteContact = async (req, res) => {
   try {
     const contact = await Contact.findOneAndDelete({
       _id: req.params.id,
-      userId: req.user._id
+      userId: req.user._id,
     });
 
     if (!contact) {
@@ -55,6 +66,13 @@ exports.deleteContact = async (req, res) => {
 
     res.json({ message: "Contact deleted" });
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message });
   }
+};
+
+module.exports = {
+  createContact,
+  getContacts,
+  updateContact,
+  deleteContact,
 };

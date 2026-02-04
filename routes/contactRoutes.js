@@ -6,7 +6,7 @@ const {
   createContact,
   getContacts,
   updateContact,
-  deleteContact
+  deleteContact,
 } = require("../controllers/contactController");
 
 router.post("/", authMiddleware, createContact);
